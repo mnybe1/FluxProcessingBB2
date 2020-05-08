@@ -1,7 +1,9 @@
 
 library(readr)
 
-setwd('../Flux-tower/met_data/cr1000/')
+#setwd('../Flux-tower/met_data/cr1000/')
+
+setwd('cr1000') #This sets the folder to save the downloaded server files to. This is within the github repo
 
 # Read the URL.
 url <- "https://ibis.geog.ubc.ca/~micromet/webdata/resources/csv/"
@@ -9,6 +11,8 @@ url <- "https://ibis.geog.ubc.ca/~micromet/webdata/resources/csv/"
 # Define files to download
 files <- c("BB2DTA.csv", "BB2ORP.csv", "BB2PAR.csv",
 					 "BB2PCT.csv","BB2RAD.csv","BB2RHA.csv","BB2SHA.csv","BB2SMA.csv","BB2STA.csv","BB2WPT.csv","BB2WTA.csv","BB2WVA.csv","BB2PSA.csv")
+
+
 
 # Loops through files to download
 for(i in 1:length(files)){
