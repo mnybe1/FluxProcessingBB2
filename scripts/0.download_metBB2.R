@@ -1,9 +1,9 @@
 
 library(readr)
 
-#setwd('../Flux-tower/met_data/cr1000/')
+#setwd('../Flux-tower/met_data/cr1000/') old version from BB1
 
-setwd('cr1000') #This sets the folder to save the downloaded server files to. This is within the github repo
+setwd('data/met_data/cr1000') #This sets the folder to save the downloaded server files to. This is within the github repo
 
 # Read the URL.
 url <- "https://ibis.geog.ubc.ca/~micromet/webdata/resources/csv/"
