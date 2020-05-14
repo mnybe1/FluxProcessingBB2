@@ -271,5 +271,10 @@ ggplot(data = cr1000, mapping = aes(x = DOY, y = WIND_VELOCITY_EC, na.rm = TRUE)
 ```
 
 ```{r save output, echo=FALSE, message=FALSE}
+<<<<<<< HEAD:1.merging_met_filesBB2.Rmd
 write.csv(cr1000, paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_merged','.csv',sep=''),row.names=FALSE)
 ```
+=======
+write.csv(cr1000, paste('../met_merged/met_merged','.csv',sep=''),row.names=FALSE)
+```
+>>>>>>> 4504e631fdaf8a48ef156c091fe9c88418f76c7f:scripts/1.merging_met_filesBB2.Rmd
