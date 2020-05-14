@@ -157,14 +157,6 @@ ggplot(data = cr1000, mapping = aes(x = DOY, y = WTH, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 ```
 
-```{r plot BOG_HEIGHT, echo=FALSE, message=FALSE}
-# WTH - full time series - look into further using Johannes' code!
-plot_ly(data = cr1000, x = ~Timestamp, y = ~BOG_HEIGHT, type = 'scatter', mode = 'lines') 
-
-# WTH - by year
-ggplot(data = cr1000, mapping = aes(x = DOY, y = BOG_HEIGHT, na.rm = TRUE)) +
-  geom_line(aes(colour=year, group=year))
-```
 
 ```{r plot SW, echo=FALSE, message=FALSE}
 # SW - full time series
@@ -194,15 +186,12 @@ ggplot(data = cr1000, mapping = aes(x = DOY, y = LONGWAVE_OUT, na.rm = TRUE)) +
 
 ```{r plot RH, echo=FALSE, message=FALSE}
 # RH - full time series
-plot_ly(data = cr1000, x = ~Timestamp, y = ~RH_2M, name = '2 m', type = 'scatter', mode = 'lines') %>%
-  add_trace(y = ~RH_38CM, name = '38 cm', mode = 'lines')
+plot_ly(data = cr1000, x = ~Timestamp, y = ~RH_2M, name = '2 m', type = 'scatter', mode = 'lines')
 
 # RH - by year
 ggplot(data = cr1000, mapping = aes(x = DOY, y = RH_2M, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 
-ggplot(data = cr1000, mapping = aes(x = DOY, y = RH_38CM, na.rm = TRUE)) +
-  geom_line(aes(colour=year, group=year))
 ```
 
 ```{r plot SHFP, echo=FALSE, message=FALSE}
@@ -224,45 +213,60 @@ ggplot(data = cr1000, mapping = aes(x = DOY, y = SHFP_3, na.rm = TRUE)) +
 
 ```{r plot TS, echo=FALSE, message=FALSE}
 # TS - full time series
-plot_ly(data = cr1000, x = ~Timestamp, y = ~SOIL_TEMP_5CM, name = '5 cm', type = 'scatter', mode = 'lines') %>%
-  add_trace(y = ~SOIL_TEMP_10CM, name = '10 cm', mode = 'lines') %>%
-  add_trace(y = ~SOIL_TEMP_50CM, name = '50 cm', mode = 'lines')
+plot_ly(data = cr1000, x = ~Timestamp, y = ~SOIL_TEMP_1_5CM, name = '1_5 cm', type = 'scatter', mode = 'lines') %>%
+  add_trace(y = ~SOIL_TEMP_1_10CM, name = '1_10 cm', mode = 'lines') %>%
+  add_trace(y = ~SOIL_TEMP_1_30CM, name = '1_30 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_1_50CM, name = '1_50 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_2_5CM, name = '2_10 cm', mode = 'lines') %>%
+  add_trace(y = ~SOIL_TEMP_2_10CM, name = '2_30 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_2_30CM, name = '2_50 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_2_50CM, name = '2_50 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_3_5CM, name = '3_10 cm', mode = 'lines') %>%
+  add_trace(y = ~SOIL_TEMP_3_10CM, name = '3_30 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_3_30CM, name = '3_50 cm', mode = 'lines') %>%
+	add_trace(y = ~SOIL_TEMP_3_50CM, name = '3_50 cm', mode = 'lines')
 
-# TS - by year
-ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_5CM, na.rm = TRUE)) +
+# TS - by year - change the variables to view other soil temp reps
+ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_1_5CM, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 
-ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_10CM, na.rm = TRUE)) +
+ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_1_10CM, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 
-ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_50CM, na.rm = TRUE)) +
+ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_1_30CM, na.rm = TRUE)) +
+  geom_line(aes(colour=year, group=year))
+
+ggplot(data = cr1000, mapping = aes(x = DOY, y = SOIL_TEMP_1_50CM, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 ```
 
 ```{r plot TW, echo=FALSE, message=FALSE}
 # WATER TEMP - full time series
-plot_ly(data = cr1000, x = ~Timestamp, y = ~WATER_TEMP_10CM, name = '10 cm', type = 'scatter', mode = 'lines') %>%
-  add_trace(y = ~WATER_TEMP_30CM, name = '30 cm', mode = 'lines')
+plot_ly(data = cr1000, x = ~Timestamp, y = ~WATER_TEMP_1_5CM, name = '1_5 cm', type = 'scatter', mode = 'lines') %>%
+  add_trace(y = ~WATER_TEMP_2_5CM, name = '2_5 cm', mode = 'lines') %>%
+	add_trace(y = ~WATER_TEMP_3_5CM, name = '3_5 cm', mode = 'lines')
 
 # TW - by year
-ggplot(data = cr1000, mapping = aes(x = DOY, y = WATER_TEMP_10CM, na.rm = TRUE)) +
+ggplot(data = cr1000, mapping = aes(x = DOY, y = WATER_TEMP_1_5CM, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 
-ggplot(data = cr1000, mapping = aes(x = DOY, y = WATER_TEMP_30CM, na.rm = TRUE)) +
+ggplot(data = cr1000, mapping = aes(x = DOY, y = WATER_TEMP_2_5CM, na.rm = TRUE)) +
+  geom_line(aes(colour=year, group=year))
+
+ggplot(data = cr1000, mapping = aes(x = DOY, y = WATER_TEMP_3_5CM, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 ```
 
 ```{r plot WS, echo=FALSE, message=FALSE}
 # WS - full time series
-# WATER TEMP - full time series
 plot_ly(data = cr1000, x = ~Timestamp, y = ~WIND_VELOCITY_CUP, name = 'Cup', type = 'scatter', mode = 'lines') %>%
-  add_trace(y = ~WIND_VELOCITY_EC2, name = 'EC 2', mode = 'lines')
+  add_trace(y = ~WIND_VELOCITY_EC, name = 'EC', mode = 'lines')
 
 # WS - by year
 ggplot(data = cr1000, mapping = aes(x = DOY, y = WIND_VELOCITY_CUP, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 
-ggplot(data = cr1000, mapping = aes(x = DOY, y = WIND_VELOCITY_EC2, na.rm = TRUE)) +
+ggplot(data = cr1000, mapping = aes(x = DOY, y = WIND_VELOCITY_EC, na.rm = TRUE)) +
   geom_line(aes(colour=year, group=year))
 ```
 
