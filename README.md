@@ -14,3 +14,4 @@ NOTE: you will need to change the path in 'setwd()' at the start of the script t
 
 rscript scripts/1.merging_met_filesBB2.Rmd
 NOTE: you will need to change the path in 'dir' at the start of the script to run locally
+Will also need to update the path to write the csv at the end of the script
