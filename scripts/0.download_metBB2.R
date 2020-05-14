@@ -9,7 +9,7 @@ setwd('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\
 url <- "https://ibis.geog.ubc.ca/~micromet/webdata/resources/csv/"
 
 # Define files to download
-files <- c("BB2DTA.csv", "BB2ORP.csv", "BB2PAR.csv",
+files <- c("BB2DTA.csv", "BB2PAR.csv",
 					 "BB2PCT.csv","BB2RAD.csv","BB2RHA.csv","BB2SHA.csv","BB2SMA.csv","BB2STA.csv","BB2WPT.csv","BB2WTA.csv","BB2WVA.csv","BB2PSA.csv")
 
 
