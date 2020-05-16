@@ -72,13 +72,21 @@ names(cr1000)
                    #"SOIL_TEMP_10CM", "SOIL_TEMP_50CM", "WTH", "BOG_HEIGHT", "WATER_TEMP_10CM",
                    #"WATER_TEMP_30CM", "WIND_VELOCITY_CUP", "WIND_VELOCITY_EC1", "WIND_VELOCITY_EC2")
 
+#names(cr1000) <- c("Timestamp", "AIR_TEMP_2M", "INCOMING_PAR", "REFLECTED_PAR",
+ #                  "PRECIP","PA_EC_AIR2.5M","PA_1.5M","SHORTWAVE_IN", "SHORTWAVE_OUT",
+  #                 "LONGWAVE_IN", "LONGWAVE_OUT", "RH_2M",
+   #                 "SHFP_1", "SHFP_2", "SHFP_3", "SVWC", "SOIL_TEMP_1_5CM",
+    #               "SOIL_TEMP_1_10CM", "SOIL_TEMP_1_30CM", "SOIL_TEMP_1_50CM","SOIL_TEMP_2_5CM",
+     #              "SOIL_TEMP_2_10CM","SOIL_TEMP_2_30CM", "SOIL_TEMP_2_50CM","SOIL_TEMP_3_5CM",
+      #             "SOIL_TEMP_3_10CM","SOIL_TEMP_3_30CM", "SOIL_TEMP_3_50CM", "WTH","WATER_TEMP_1_5CM","WATER_TEMP_2_5CM","WATER_TEMP_3_5CM", "WIND_VELOCITY_CUP", "WIND_VELOCITY_EC")
+
 names(cr1000) <- c("Timestamp", "AIR_TEMP_2M", "INCOMING_PAR", "REFLECTED_PAR",
                    "PRECIP","PA_EC_AIR2.5M","PA_1.5M","SHORTWAVE_IN", "SHORTWAVE_OUT",
                    "LONGWAVE_IN", "LONGWAVE_OUT", "RH_2M",
                     "SHFP_1", "SHFP_2", "SHFP_3", "SVWC", "SOIL_TEMP_1_5CM",
                    "SOIL_TEMP_1_10CM", "SOIL_TEMP_1_30CM", "SOIL_TEMP_1_50CM","SOIL_TEMP_2_5CM",
                    "SOIL_TEMP_2_10CM","SOIL_TEMP_2_30CM", "SOIL_TEMP_2_50CM","SOIL_TEMP_3_5CM",
-                   "SOIL_TEMP_3_10CM","SOIL_TEMP_3_30CM", "SOIL_TEMP_3_50CM", "WTH","WATER_TEMP_1_5CM","WATER_TEMP_2_5CM","WATER_TEMP_3_5CM", "WIND_VELOCITY_CUP", "WIND_VELOCITY_EC")
+                   "SOIL_TEMP_3_10CM","SOIL_TEMP_3_30CM", "SOIL_TEMP_3_50CM", "WTH", "WIND_VELOCITY_CUP", "WIND_VELOCITY_EC")
 # Convert all NaN to NA
 is.nan.data.frame <- function(cr1000)
   do.call(cbind, lapply(cr1000, is.nan))
