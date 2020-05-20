@@ -11,7 +11,7 @@ data <- read_csv('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-
 
 # Extract variables of interest
 data2 <- data %>% 
-	select(DATE, AIR_TEMP_2M, PA_2M)
+	select(DATE, AIR_TEMP_2M, PA_1.5M)
 
 data2$DATE <- format(data2$DATE,format='%Y-%m-%d %H%M')
 
@@ -25,7 +25,11 @@ names(data2) <- c("TIMESTAMP_1", "Ta", "Pa")
 data2 <- rbind(c("yyyy-mm-dd HHMM", "C", "kPa"), data2)
 
 # Export
-write.table(data2, "./Flux-tower/EP_outputs/biomet_for_EP.txt",
+#write.table(data2, "./Flux-tower/EP_outputs/biomet_for_EP.txt",
+#						sep = ",", row.names=FALSE, quote=FALSE)
+
+#alt export location 
+write.table(data2, "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower ",
 						sep = ",", row.names=FALSE, quote=FALSE)
 
 
