@@ -23,7 +23,7 @@ knitr::opts_knit$set(root.dir = dir)
 ```
 
 ```{r load met_merged.csv, echo=FALSE, include=FALSE}
-ts<-read.csv( "./met_data/met_merged/met_merged.csv",sep=",",header=TRUE,dec=".")
+ts<-read.csv( "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_mergedBB2.csv",sep=",",header=TRUE,dec=".")
 head(ts)
 tail(ts)
 ```
@@ -225,5 +225,5 @@ for (i in 2:ncol(DATA)){
 
 ```{r save filtered & gap-filled output, echo = FALSE}
 # save output
-write.csv(DATA,paste('./met_data/met_merged/met_corrected_gapfilled','.csv',sep=''),row.names=FALSE)      
+write.csv(DATA,paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2','.csv',sep=''),row.names=FALSE)      
 ```
