@@ -25,3 +25,4 @@ You will also need to download the most recent UBC climate data. The link to do 
 - 3.export_biomet_for_EddyProBB2.R
 
 NOTE: change paths to run locally
+Currently having issues syncing EP_outputs folder so the file 'biomet_for_EP_BB2.txt' will have to be moved manually from where it is being output on the script, into the EP_outputs folder on the google drive. 
