@@ -223,6 +223,13 @@ for (i in 2:ncol(DATA)){
 }
 ```
 
+#Removing extra rows at the start of data that predate installation of the EC tower
+# Because this was creating issues when running script 3 and the read_csv function
+```{r remove extra rows at start, echo = FALSE}
+DATA <- DATA %>%
+	filter(DATE >= "2019-11-19 00:00:00	")
+```
+
 ```{r save filtered & gap-filled output, echo = FALSE}
 # save output
 write.csv(DATA,paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2','.csv',sep=''),row.names=FALSE)      
