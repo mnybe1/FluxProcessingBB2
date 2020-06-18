@@ -1,5 +1,9 @@
 
 library(readr)
+library(googledrive)
+
+#pathurl <- "https://drive.google.com/drive/folders/1wf7YhDmSJczQitZq5nH1JQhrAl5yhRx8"
+#drive_get(pathurl)
 
 #setwd('../Flux-tower/met_data/cr1000/') old version from BB1
 #This sets the folder to save the downloaded server files to. This is within the github repo
