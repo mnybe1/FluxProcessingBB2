@@ -1,12 +1,7 @@
 
 library(readr)
-library(googledrive)
-
-#pathurl <- "https://drive.google.com/drive/folders/1wf7YhDmSJczQitZq5nH1JQhrAl5yhRx8"
-#drive_get(pathurl)
 
 #setwd('../Flux-tower/met_data/cr1000/') old version from BB1
-#This sets the folder to save the downloaded server files to. This is within the github repo
 setwd('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/cr1000') #Marion's wd
 
 # Read the URL.
