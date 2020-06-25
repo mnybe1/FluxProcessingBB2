@@ -3,6 +3,7 @@ library(gtools)
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(DescTools)
 
 #The output files to be compiled are  "BB_L1"
 
@@ -17,8 +18,8 @@ rm(list=ls())
 
 # set path
 #path <- "./Flux-tower/EP_outputs"
-#path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs"
-path <- "/Users/marionnyberg/Google\ Drive/BC/UBC/TEST\ BB\ FLUX/BB2"
+path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs"
+#path <- "/Users/marionnyberg/Google\ Drive/BC/UBC/TEST\ BB\ FLUX/BB2"
 
 # List only full_output files
 raw.files <- list.files(path = path, pattern = "full_output")
@@ -39,7 +40,7 @@ for(i in 1:length(raw.files)) {
 ####
 # 2. Creating a Timestamp with date and time variable to order the data by date-time
 ###
-raw.data$Timestamp<-as.POSIXct(paste(raw.data$date, raw.data$time), format="%m/%d/%y %H:%M", tz = "Etc/GMT+8")
+raw.data$Timestamp<-as.POSIXct(paste(raw.data$date, raw.data$time), format="%Y-%m-%d %H:%M", tz = "Etc/GMT+8")
 
 data.ordered<-raw.data[order(raw.data$Timestamp, decreasing = FALSE ),]
 
@@ -57,7 +58,7 @@ begining<-as.numeric(ts$Timestamp[1])                           #to find the num
 as.POSIXct(begining,origin="1970-01-01 00:00:00",tz="Etc/GMT+8") #to confirm that the begining is the right one
 ts$Timestamp[1]
 
-ts[ts$filename %like% "not_enought_data", ]
+ts[ts$filename %like% "not_enough_data", ]
 
 
 Ystart<-as.integer(as.character(ts[1,ncol(ts)], "%Y"))
@@ -105,8 +106,8 @@ for(i in 2:ncol(cont.DS)){
 library(lubridate)
 library(zoo)
 
-date_loca <- ymd_hms(cont.DS$DATE, tz="America/Vancouver")
-date_local<-as.POSIXlt(date_loca,tz="America/Vancouver")
+date_local <- ymd_hms(cont.DS$DATE, tz="America/Vancouver")
+date_local<-as.POSIXlt(date_local,tz="America/Vancouver")
 
 for (i in 1:nrow(cont.DS)){
 	cont.DS$Year_local[i]<-as.integer(as.character(date_local[i],"%Y"))
@@ -140,7 +141,7 @@ cont.DS$date <- as.Date(cont.DS$DATE) #already got this one from the answers abo
 
 cont.DS$time <- format(as.POSIXct(cont.DS$DATE) ,format = "%H:%M") 
 
-write.csv(cont.DS,paste('./Flux-tower/flux_data/BB_L1','.csv',sep =''),row.names=FALSE)
+write.csv(cont.DS,paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L1','.csv',sep =''),row.names=FALSE)
 
 
 
