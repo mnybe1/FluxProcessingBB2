@@ -18,7 +18,7 @@ rm(list=ls())
 
 # set path
 #path <- "./Flux-tower/EP_outputs"
-path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs"
+path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs_test_1"
 #path <- "/Users/marionnyberg/Google\ Drive/BC/UBC/TEST\ BB\ FLUX/BB2"
 
 # List only full_output files
@@ -30,7 +30,7 @@ for(i in 1:length(raw.files)) {
 	names_temp <- names(read.csv(paste(path,"/",raw.files[i],sep=""),skip=1,sep=",",header=TRUE,dec="."))
 	
 	# Load data & apply header names
-	temp <- read.csv(paste(path,"/",raw.files[i],sep=""),skip=3,header=FALSE) #skipt=3 means skip the first 3 rows of the file
+	temp <- read.csv(paste(path,"/",raw.files[i],sep=""),skip=3,header=FALSE) #skip=3 means skip the first 3 rows of the file
 	names(temp) <- names_temp
 	
 	# Append to file
@@ -106,8 +106,8 @@ for(i in 2:ncol(cont.DS)){
 library(lubridate)
 library(zoo)
 
-date_local <- ymd_hms(cont.DS$DATE, tz="America/Vancouver")
-date_local<-as.POSIXlt(date_local,tz="America/Vancouver")
+date_loca <- ymd_hms(cont.DS$DATE, tz="America/Vancouver")
+date_local<-as.POSIXlt(date_loca,tz="America/Vancouver")
 
 for (i in 1:nrow(cont.DS)){
 	cont.DS$Year_local[i]<-as.integer(as.character(date_local[i],"%Y"))
