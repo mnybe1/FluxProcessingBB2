@@ -346,5 +346,5 @@ output <- rbind(UNITS,output)
 output[is.na(output)]<--9999
 
 #Saving the file:
-write.table(output, file = paste('./flux_data/REddyProc_input/for_gap_filling_partitioning','.txt',sep=''),row.names=FALSE,sep='\t')   
+write.table(output, file = paste('./flux_data/REddyProc_input/for_gap_filling_partitioningBB2','.txt',sep=''),row.names=FALSE,sep='\t')   
 ```
