@@ -18,7 +18,7 @@ rm(list=ls())
 
 # set path
 #path <- "./Flux-tower/EP_outputs"
-path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs_test"
+path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs"
 #path <- "/Users/marionnyberg/Google\ Drive/BC/UBC/TEST\ BB\ FLUX/BB2"
 
 # List only full_output files
