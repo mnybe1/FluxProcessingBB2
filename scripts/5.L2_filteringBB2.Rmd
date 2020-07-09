@@ -99,6 +99,7 @@ Data_QAQC$DATE[1]
 met$DATE[1]
 
 Data_QAQC$obs<-c(1:nrow(Data_QAQC))
+met$obs1 <- c(1:nrow(met)) #Testing because 'obs' column doesn't start at 1 for some reason
 
 start_date<-Data_QAQC$DATE[1]
 
@@ -113,16 +114,19 @@ end_date    #end of matching period
 F_start<-Data_QAQC[Data_QAQC$DATE==start_date,match('obs',names(Data_QAQC))] 
 F_end<-Data_QAQC[Data_QAQC$DATE==end_date,match('obs',names(Data_QAQC))]
 
-M_start<-met[met$DATE==start_date,match('obs',names(met))]
-M_end<-met[met$DATE==end_date,match('obs',names(met))]
+#M_start<-met[met$DATE==start_date,match('obs',names(met))]
+#M_end<-met[met$DATE==end_date,match('obs',names(met))]
+
+M_start<-met[met$DATE==start_date,match('obs1',names(met))] #TEST
+M_end<-met[met$DATE==end_date,match('obs1',names(met))] #TEST
 
 M_end-M_start==F_end-F_start   #If everything goes well this should be TRUE 
 
 # Create output file to use in REddyProc for ustar filtering
-#output <- cbind(met[M_start:M_end,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN'),names(met))], Data_QAQC[F_start:F_end,match(c('co2_flux','u.'),names(Data_QAQC))])
+output <- cbind(met[M_start:M_end,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN'),names(met))], Data_QAQC[F_start:F_end,match(c('co2_flux','u.'),names(Data_QAQC))])
 
 #01/07/2020 - for some reason I can't get the above to work 
-output <- cbind(met[2461:8174,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN'),names(met))], Data_QAQC[F_start:F_end,match(c('co2_flux','u.'),names(Data_QAQC))])
+#output <- cbind(met[2461:8174,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN'),names(met))], #Data_QAQC[F_start:F_end,match(c('co2_flux','u.'),names(Data_QAQC))])
 
 
 # Reorder & rename columns
@@ -266,10 +270,7 @@ plot_ly(data = input, x = ~DATE, y = ~ch4_var, name = 'original', type = 'scatte
   toWebGL()
 ```
 ```{r Plot energy balance closure, echo=FALSE, warning=FALSE}
-#Ebal_denominator <- met$NR[M_start:M_end]-met$G[M_start:M_end]
-
-#01/07/2020 - because couldn't get M_start/M_end to work for some reason)
-Ebal_denominator <- met$NR[2461:8174]-met$G[2461:8174]
+Ebal_denominator <- met$NR[M_start:M_end]-met$G[M_start:M_end]
 
 Ebal_numerator <- Data_QAQC$H+Data_QAQC$LE
 
@@ -320,25 +321,25 @@ write.csv(Data_QAQC,paste('./flux_data/BB_L2','.csv',sep=''),row.names=FALSE)
 #Converting units for the right input file format
 met$VPD_hPa <- met$VPD*10
 
-# Create output file to use in REddyProc for ustar filtering
-#output <- cbind(met[M_start:M_end,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN','RH_2M', 'VPD_hPa','SOIL_TEMP_5CM','SOIL_TEMP_10CM','WTH'),names(met))], 
-               # Data_QAQC[F_start:F_end,match(c('co2_flux','ch4_flux','LE','H','u.'),names(Data_QAQC))])
+# Create output file to use in REddyProc for ustar filtering - need all soil temp reps?
+output <- cbind(met[M_start:M_end,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN','RH_2M', 'VPD_hPa','SOIL_TEMP_1_5CM','SOIL_TEMP_1_10CM', 'SOIL_TEMP_1_30CM','SOIL_TEMP_1_50CM','SOIL_TEMP_2_5CM','SOIL_TEMP_2_10CM', 'SOIL_TEMP_2_30CM','SOIL_TEMP_2_50CM','SOIL_TEMP_3_5CM','SOIL_TEMP_3_10CM', 'SOIL_TEMP_3_30CM','SOIL_TEMP_3_50CM','WTH'),names(met))], 
+               Data_QAQC[F_start:F_end,match(c('co2_flux','ch4_flux','LE','H','u.'),names(Data_QAQC))])
 
 #01/07/2020 - M_start and M_end issue and soil temp reps added - need all reps? 
-output <- cbind(met[2461:8174,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN','RH_2M', 'VPD_hPa','SOIL_TEMP_1_5CM','SOIL_TEMP_1_10CM','WTH'),names(met))], 
-                Data_QAQC[F_start:F_end,match(c('co2_flux','ch4_flux','LE','H','u.'),names(Data_QAQC))])
+#output <- cbind(met[2461:8174,match(c('year','jday','hour_dec','AIR_TEMP_2M','SHORTWAVE_IN','RH_2M', 'VPD_hPa','SOIL_TEMP_1_5CM','SOIL_TEMP_1_10CM','WTH'),names(met))], 
+    #            Data_QAQC[F_start:F_end,match(c('co2_flux','ch4_flux','LE','H','u.'),names(Data_QAQC))])
 
 # Reorder & rename columns
 #output <- output[c("year", "jday", "hour_dec","co2_flux","ch4_flux","LE","H","SHORTWAVE_IN","AIR_TEMP_2M","SOIL_TEMP_5CM","SOIL_TEMP_10CM", "RH_2M","VPD_hPa","u.","WTH")]
 
 #01/07/2020 - add reps for soil temp
-output <- output[c("year", "jday", "hour_dec","co2_flux","ch4_flux","LE","H","SHORTWAVE_IN","AIR_TEMP_2M","SOIL_TEMP_1_5CM","SOIL_TEMP_1_10CM", "RH_2M","VPD_hPa","u.","WTH")]
+output <- output[c("year", "jday", "hour_dec","co2_flux","ch4_flux","LE","H","SHORTWAVE_IN","AIR_TEMP_2M","SOIL_TEMP_1_5CM","SOIL_TEMP_1_10CM", 'SOIL_TEMP_1_30CM','SOIL_TEMP_1_50CM','SOIL_TEMP_2_5CM','SOIL_TEMP_2_10CM', 'SOIL_TEMP_2_30CM','SOIL_TEMP_2_50CM','SOIL_TEMP_3_5CM','SOIL_TEMP_3_10CM', 'SOIL_TEMP_3_30CM','SOIL_TEMP_3_50CM', "RH_2M","VPD_hPa","u.","WTH")]
 
-names_output<-c('Year','DoY','Hour','NEE','FCH4','LE','H','Rg','Tair','Tsoil5cm','Tsoil10cm','rH','VPD','Ustar','WTH')
+names_output<-c('Year','DoY','Hour','NEE','FCH4','LE','H','Rg','Tair','Tsoil5cm_1','Tsoil10cm_1','Tsoil30cm_1','Tsoil50cm_1','Tsoil5cm_2','Tsoil10cm_2','Tsoil30cm_2','Tsoil50cm_2', 'Tsoil5cm_3','Tsoil10cm_3','Tsoil30cm_3','Tsoil50cm_3','rH','VPD','Ustar','WTH')
 names(output)<-names_output
 
 #Adding the units row
-UNITS<-list('-','-','-','umol_m-2_s-1','umol_m-2_s-1','Wm-2','Wm-2','Wm-2','degC','degC','degC','%','hPa','ms-1','cm')
+UNITS<-list('-','-','-','umol_m-2_s-1','umol_m-2_s-1','Wm-2','Wm-2','Wm-2','degC','degC','degC','degC','degC','degC','degC','degC','degC','degC','degC','degC','degC','%','hPa','ms-1','cm')
 
 output <- rbind(UNITS,output)
 
