@@ -36,7 +36,7 @@ EddyDataWithPosix.F <- fConvertTimeToPosix(EddyData.F, 'YDH',Year.s = 'Year',Day
 
 # Initalize R5 reference class sEddyProc for post-processing of eddy data with the variables needed for post-processing later -------------------------------------
 EddyProc.C <- sEddyProc$new('CA-BB', EddyDataWithPosix.F,
-														c("NEE","FCH4","LE","H","Rg","Tair","Tsoil5cm","Tsoil10cm","rH","VPD","Ustar","WTH"))
+														c("NEE","FCH4","LE","H","Rg","Tair",'Tsoil5cm_1','Tsoil10cm_1','Tsoil30cm_1','Tsoil50cm_1','Tsoil5cm_2','Tsoil10cm_2','Tsoil30cm_2','Tsoil50cm_2', 'Tsoil5cm_3','Tsoil10cm_3','Tsoil30cm_3','Tsoil50cm_3',"rH","VPD","Ustar","WTH"))
 
 
 # Use MDS for gap-filling NEE, H, LE, and FCH4 (but also use RF for FCH4) ----------------------------------
@@ -51,8 +51,19 @@ EddyProc.C$sMDSGapFill('Tair', FillAll.b = FALSE)
 EddyProc.C$sMDSGapFill('VPD', FillAll.b = FALSE)
 EddyProc.C$sMDSGapFill('Rg', FillAll.b = FALSE)
 EddyProc.C$sMDSGapFill('WTH', FillAll.b = FALSE)
-EddyProc.C$sMDSGapFill('Tsoil10cm', FillAll.b = FALSE)
-EddyProc.C$sMDSGapFill('Tsoil5cm', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil5cm_1', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil10cm_1', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil30cm_1', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil50cm_1', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil5cm_2', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil10cm_2', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil30cm_2', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil50cm_2', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil5cm_3', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil10cm_3', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil30cm_3', FillAll.b = FALSE)
+EddyProc.C$sMDSGapFill('Tsoil50cm_3', FillAll.b = FALSE)
+
 
 # Apply nighttime gap-filling algorithm -----------------------------------
 EddyProc.C$sMRFluxPartition()
@@ -72,9 +83,7 @@ names(FilledEddyData.F)
 # daily sums (from REddyProc) - CHECK UNITS!
 #setwd("./flux_data")
 setwd("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data")
-#EddyProc.C$sPlotDailySums(Var.s = 'LE_f',Format.s = "png", unit.s = "MJ/m2/day") #getting an error saying Var.s has been depreceated 
-EddyProc.C$sPlotDailySums(Var = 'LE_f',Format = "png", unit = "MJ/m2/day")
-
+EddyProc.C$sPlotDailySums(Var.s = 'LE_f',Format.s = "png", unit.s = "MJ/m2/day") #getting an error saying Var.s has been depreceated 
 EddyProc.C$sPlotDailySums(Var.s = 'H_f',Format.s = "png", unit.s = "MJ/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'NEE_f',Format.s = "png", unit.s = "gC/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'FCH4_f',Format.s = "png", unit.s = "gC/m2/day")
@@ -120,7 +129,7 @@ Input$MM <- (Input$Hour-Input$HH)*60
 Input$TIMESTAMP_END <- make_datetime(Input$Year, 1, Input$DoY, Input$HH, Input$MM)
 
 # Define predictors
-predictors <- c("FCH4", "Ustar","NEE","LE","H","Rg","Tair","Tsoil5cm","Tsoil10cm",
+predictors <- c("FCH4", "Ustar","NEE","LE","H","Rg","Tair",'Tsoil5cm_1','Tsoil10cm_1','Tsoil30cm_1','Tsoil50cm_1','Tsoil5cm_2','Tsoil10cm_2','Tsoil30cm_2','Tsoil50cm_2', 'Tsoil5cm_3','Tsoil10cm_3','Tsoil30cm_3','Tsoil50cm_3',
                 "rH","VPD","WTH","DoY") 
 
 ML.df <- Input %>% select(predictors)
@@ -146,18 +155,19 @@ test_set <- wm_only[-index,]
 #Add parallel processing for the fast processing if you want to
 library(parallel)
 library(doParallel)
-cluster <- makeCluster(6)
+#cluster <- makeCluster(6)
+cluster <- parallel::makeCluster(10, setup_timeout = 0.5)
 registerDoParallel(cluster)
 RF_FCH4 <- train(FCH4 ~ ., data = train_set[,predictors],
  								 method = "rf",
  								 preProcess = c("medianImpute"),                #impute missing met data with median
- 								 trControl=trainControl(method = "repeatedcv",   #three-fold cross-validation for model parameters 3 times
- 								 											number = 3,                #other option: "cv" without repetition
- 								 											repeats = 3),
+ 								 trControl=trainControl(method = "cv",   #three-fold cross-validation for model parameters 3 times
+ 								 											number = 3),
  								 na.action = na.pass,
- 								 allowParallel=TRUE, # This requires parallel packages. Otherwise you can choose FALSE.
+ 								 allowParallel=FALSE, # This requires parallel packages. Otherwise you can choose FALSE.
  								 ntree=400, # can generate more trees
  								 importance = TRUE)
+
 RF_FCH4$bestTune
 RF_FCH4$results
 
@@ -210,6 +220,6 @@ head(essential)
 if (nrow(L2) == nrow(essential)){
   # If TRUE, Combine
   L3 <- cbind(L2,essential)
-  write_csv(L3,"./flux_data/BB_L3.csv")
+  write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB_L3.csv")
 }
 ```
