@@ -207,7 +207,8 @@ print(summary(regrRF_whole))
 ```{r Load L2 data, echo=FALSE, include=FALSE}
 L2 <- read.csv(paste("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB_L2",".csv",sep = ""),sep=",",header=TRUE,dec=".")  
 
-# Add new variables to L2
+met <- read.csv('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2.csv') 
+
 
 # First, RF CH4 gap-filled data (figure out uncertainty for RF gap-filling)
 L2$FCH4_gf_RF <- result$FCH4_RF_filled
@@ -219,7 +220,16 @@ head(essential)
 # Check to make sure files are of the same length and if TRUE, append to L2
 if (nrow(L2) == nrow(essential)){
   # If TRUE, Combine
-  L3 <- cbind(L2,essential)
-  write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB_L3.csv")
-}
+  L3 <- cbind(L2,essential)}
+
+L3 <- merge(L3, met, by = "DATE")
+
+write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L3.csv")
+
+# Check to make sure files are of the same length and if TRUE, append to L2
+#if (nrow(L2) == nrow(essential)){
+  # If TRUE, Combine
+ # L3 <- cbind(L2,essential)
+  #write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ #2/Flux-tower/flux_data/BB_L3.csv")
+#}
 ```
