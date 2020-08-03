@@ -314,7 +314,7 @@ mtext(paste('Diel Avg. Closure = ', round(Eclosure,2)),side=3,line=-4,at=200,cex
 ```
 
 ```{r Save L2 output, echo=FALSE, warning=FALSE}
-write.csv(Data_QAQC,paste('./flux_data/BB_L2','.csv',sep=''),row.names=FALSE)   
+write.csv(Data_QAQC,paste('./flux_data/BB2_L2','.csv',sep=''),row.names=FALSE)   
 ```
 
 ```{r Now export data for gap-filling and partitioning using REddyProc, echo=FALSE, warning=FALSE}
