@@ -205,7 +205,7 @@ print(summary(regrRF_whole))
 ```
 
 ```{r Load L2 data, echo=FALSE, include=FALSE}
-L2 <- read.csv(paste("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB_L2",".csv",sep = ""),sep=",",header=TRUE,dec=".")  
+L2 <- read.csv(paste("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L2",".csv",sep = ""),sep=",",header=TRUE,dec=".")  
 
 met <- read.csv('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2.csv') 
 
