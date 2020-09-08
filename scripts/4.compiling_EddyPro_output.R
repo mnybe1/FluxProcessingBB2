@@ -5,7 +5,7 @@ library(dplyr)
 library(plotly)
 library(DescTools)
 
-#The output files to be compiled are  "BB_L1"
+#The output files to be compiled are  "BB2_L1"
 
 #CODE:
 #############################################################################################

@@ -222,7 +222,8 @@ if (nrow(L2) == nrow(essential)){
   # If TRUE, Combine
   L3 <- cbind(L2,essential)}
 
-L3 <- merge(L3, met, by = "DATE")
+L3 <- merge(L3, met, by = "DATE") 
+
 
 write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L3.csv")
 
