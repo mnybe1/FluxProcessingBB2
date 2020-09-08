@@ -37,6 +37,24 @@ NOTE: change paths to run locally
 NOTE: you will need to to change the paths throughout so that it can be run locally. 
 
 
-- 
+- scripts/3.export_biomet_for_EddyProBB2.R
+
+NOTE: you will need to to change the paths throughout so that it can be run locally. 
+
+
+- scripts/4.compilling_EddyPro_output.R
+
+NOTE: you will need to to change the paths throughout so that it can be run locally. 
+
+
+- L2 filtering: "5.L2_filteringBB2.Rmd"
+
+NOTE: change paths to run locally
+
+
+- L3 Gap filling and RF "6.L3_BB2.Rmd"
+
+NOTE:change paths to run locally
+
 
 
