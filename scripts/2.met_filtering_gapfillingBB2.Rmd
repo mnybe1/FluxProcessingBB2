@@ -98,6 +98,13 @@ DATA$obs<-c(1:nrow(cont.DS))
 #head(DATA)
 #tail(DATA)
 DATA <- DATA[-nrow(DATA),]
+
+#Corrections  for RH
+bad_RH <- which(DATA$DATE <= '2020-03-29 00:00:00')
+
+DATA$RH_2M[bad_RH] <- NA
+
+#DATA$RH_2M[DATA$RH_2M >= '105'] <- NA
 ```
 
 ```{r gap-fill using ECCC data & ClimateAtUBC data, echo = FALSE}
