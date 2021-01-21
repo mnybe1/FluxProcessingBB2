@@ -35,16 +35,9 @@ NOTE: change paths to run locally
 - scripts/4.compiling_EddyPro_output.R
 
 NOTE: you will need to to change the paths throughout so that it can be run locally. 
+There is often an issue in the csv file of the latest "*full_output" EddyPro file. The last few columns are unlabelled, so they won't compile with previous ones. You will need to open an earlier file, copy the column names (often from column "FU" onwards), and paste them into the newest EddyPro output file, where the column names are missing. 
 
-
-- scripts/3.export_biomet_for_EddyProBB2.R
-
-NOTE: you will need to to change the paths throughout so that it can be run locally. 
-
-
-- scripts/4.compilling_EddyPro_output.R
-
-NOTE: you will need to to change the paths throughout so that it can be run locally. 
+After script 4 has run, check the BB2_L1 file to make sure all the data is there and up to date.
 
 
 - L2 filtering: "5.L2_filteringBB2.Rmd"

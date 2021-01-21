@@ -52,6 +52,9 @@ ch4_var_max <- 0.0005
 ch4_flux_min <- -0.2 #[µmol+1s-1m-2]
 ch4_flux_max <- 0.7 #[µmol+1s-1m-2]
 ustar_max <- 1.2
+wind_max <- 330 #degrees - added 14/12/20 - M.Nyberg
+wind_min <- 30 #degrees - added 14/12/20 - M.Nyberg
+
 
 # Plot filtering variable of interest to check values
 plot_ly(data = Data_QAQC, x = ~DATE, y = ~ch4_var, name = 'pitch', type = 'scatter', mode = 'line') %>%
@@ -69,6 +72,8 @@ Data_QAQC$badq <- ifelse(input$h2o_flux < h2o_flux_min | input$h2o_flux > h2o_fl
 Data_QAQC$badc <- ifelse(input$co2_flux < co2_flux_min | input$co2_flux > co2_flux_max | input$co2_var > co2_var_max | input$co2_mean < co2_mean_min | input$mean_value_RSSI_LI.7200 < mean_value_RSSI_LI.7200_min | input$qc_co2_flux > qc_flag,1,0)
 
 Data_QAQC$badm <- ifelse(input$ch4_flux < ch4_flux_min | input$ch4_flux > ch4_flux_max | input$ch4_var > ch4_var_max | input$ch4_mean < ch4_mean_min | input$rssi_77_mean < rssi_77_mean_min | input$qc_ch4_flux > qc_flag,1,0)
+
+Data_QAQC$badwind <- ifelse(input$wind_dir > wind_max | input$wind_dir < wind_min,1,0) #added 14/12/20 - M.Nyberg
 ```
 
 ```{r Filter relevant CO2 variables to run ustar filtering next, echo=FALSE, warning=FALSE}
@@ -208,6 +213,10 @@ Data_QAQC$co2_flux[Data_QAQC$badc == 1] <- NA
 
 # Bad CH4 fluxes
 Data_QAQC$ch4_flux[Data_QAQC$badm == 1]  <- NA
+
+# Bad wind direction - added 14/12/20 M.Nyberg
+Data_QAQC$wind_dir[Data_QAQC$badwind == 1]  <- NA
+
 ```
 
 ```{r Plot L2 fluxes, echo=FALSE, warning=FALSE}
@@ -248,6 +257,11 @@ plot_ly(data = input, x = ~DATE, y = ~ch4_flux*1000, name = 'original', type = '
 # Bad rotatoion angle
 plot_ly(data = input, x = ~DATE, y = ~pitch, name = 'original', type = 'scatter', mode = 'line') %>%
   add_trace(data = Data_QAQC, x = ~DATE[badrot == 1], y = ~pitch[badrot == 1], name = 'filtered', mode = 'markers') %>% 
+  toWebGL()
+
+# Wind direction - added 14/12/2020 - M.Nyberg - not sure if this has worked but there are NAs in the Data_QAQC file
+plot_ly(data = input, x = ~DATE, y = ~wind_dir, name = 'original', type = 'scatter', mode = 'line') %>%
+  add_trace(data = Data_QAQC, x = ~DATE[badwind == 1], y = ~wind_dir[badwind == 1], name = 'filtered', mode = 'markers') %>% 
   toWebGL()
 
 # Variances
