@@ -38,14 +38,17 @@ EddyDataWithPosix.F <- fConvertTimeToPosix(EddyData.F, 'YDH',Year.s = 'Year',Day
 EddyProc.C <- sEddyProc$new('CA-BB', EddyDataWithPosix.F,
 														c("NEE","FCH4","LE","H","Rg","Tair",'Tsoil5cm_1','Tsoil10cm_1','Tsoil30cm_1','Tsoil50cm_1','Tsoil5cm_2','Tsoil10cm_2','Tsoil30cm_2','Tsoil50cm_2', 'Tsoil5cm_3','Tsoil10cm_3','Tsoil30cm_3','Tsoil50cm_3',"rH","VPD","Ustar","WTH"))
 
-#uStarTh <- EddyProc.C$sEstUstarThresholdDistribution(nSample = 100L, probs = c(0.05, 0.5, 0.95)) #added 14/12/2020 M.Nyberg
-#uStarTh %>%
- # filter( aggregationMode == "year") %>%
-  #select( uStar, "5%", "50%", "95%") #added 14/12/2020 M.Nyberg
+uStarTh <- EddyProc.C$sEstUstarThresholdDistribution(nSample = 100L, probs = c(0.05, 0.5, 0.95)) #added 14/12/2020 M.Nyberg
+uStarTh %>%
+  filter( aggregationMode == "year") %>%
+  select( uStar, "5%", "50%", "95%") #added 14/12/2020 M.Nyberg
 
-#uStarThAnnual <-usGetAnnualSeasonUStarMap(uStarTh)[-2] #added 14/12/2020 M.Nyberg
-#uStarSuffixes <- colnames(uStarThAnnual)[-1] #added 14/12/2020 M.Nyberg
-#print(uStarThAnnual) #added 14/12/2020 M.Nyberg
+uStarThAnnual <-usGetAnnualSeasonUStarMap(uStarTh)[-2] #added 14/12/2020 M.Nyberg
+uStarSuffixes <- colnames(uStarThAnnual)[-1] #added 14/12/2020 M.Nyberg
+print(uStarThAnnual) #added 14/12/2020 M.Nyberg
+
+EddyProc.C$sGetUstarScenarios() #added 22/03/2021 M.Nyberg
+EddyProc.C$sMDSGapFillUStarScens('NEE') #added 22/03/2021 M.Nyberg
 
 # Use MDS for gap-filling NEE, H, LE, and FCH4 (but also use RF for FCH4) ----------------------------------
 EddyProc.C$sMDSGapFill('NEE', FillAll.b = TRUE)
