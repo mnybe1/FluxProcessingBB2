@@ -49,7 +49,7 @@ NOTE: change paths to run locally
 
 NOTE:change paths to run locally
 
-Uncertainty has been added but the variables have not been added to the 'essential' object yet, so to access NEE uncertainty estimates use the file 'BB2_REddyProc_gapfilled_partition_fulloutput.csv'
+Uncertainty has been added but the variables have not been added to the 'essential' object yet, so to access NEE uncertainty estimates use the file 'BB_REddyProc_gapfilled_partition_fulloutputBB2.csv'
 
 
 
