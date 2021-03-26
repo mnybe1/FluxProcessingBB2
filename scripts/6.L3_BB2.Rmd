@@ -48,13 +48,25 @@ uStarSuffixes <- colnames(uStarThAnnual)[-1] #added 14/12/2020 M.Nyberg
 print(uStarThAnnual) #added 14/12/2020 M.Nyberg
 
 EddyProc.C$sGetUstarScenarios() #added 22/03/2021 M.Nyberg
-EddyProc.C$sMDSGapFillUStarScens('NEE') #added 22/03/2021 M.Nyberg
+EddyProc.C$sMDSGapFillUStarScens('NEE', FillAll = TRUE) #added M.Nyberg 26/03/2021
+EddyProc.C$sMDSGapFillUStarScens('FCH4', FillAll = TRUE) #added M.Nyberg 26/03/2021
+
+
+grep("NEE_.*_f$",names(EddyProc.C$sExportResults()) #added M.Nyberg 26/03/2021
+, value = TRUE)
+grep("NEE_.*_fsd$",names(EddyProc.C$sExportResults()) #added M.Nyberg 26/03/2021
+, value = TRUE)
+
+EddyProc.C$sMDSGapFillUStarScens('FCH4', FillAll = TRUE) #added M.Nyberg 26/03/2021
+
 
 # Use MDS for gap-filling NEE, H, LE, and FCH4 (but also use RF for FCH4) ----------------------------------
 EddyProc.C$sMDSGapFill('NEE', FillAll.b = TRUE)
 EddyProc.C$sMDSGapFill('LE', FillAll.b = TRUE)
 EddyProc.C$sMDSGapFill('H', FillAll.b = TRUE)
 EddyProc.C$sMDSGapFill('FCH4', FillAll.b = TRUE)
+
+
 
 # Gap-filling met data for partitioning  ----------------------------------
 EddyProc.C$sSetLocationInfo(Lat_deg.n = 49.118981, Long_deg.n = -122.995150, TimeZone_h.n = -8)
@@ -77,13 +89,27 @@ EddyProc.C$sMDSGapFill('Tsoil50cm_3', FillAll.b = FALSE)
 
 
 # Apply nighttime gap-filling algorithm -----------------------------------
-EddyProc.C$sMRFluxPartition()
-EddyProc.C$sApplyUStarScen(EddyProc.C$sMRFluxPartition )
+resP <- lapply(uStarSuffixes, function(suffix){ #added M.Nyberg 26/03/2021
+EddyProc.C$sMRFluxPartition(Suffix.s = suffix)
+})
 
+grep("GPP.*_f$|Reco", #added M.Nyberg 26/03/2021
+names(EddyProc.C$sExportResults()), value = TRUE)
+
+#EddyProc.C$sMRFluxPartition()
+#EddyProc.C$sApplyUStarScen(EddyProc.C$sMRFluxPartition )
+
+EddyProc.C$sPlotFingerprintY('GPP_U50_f', Year = 2020)
 
 # Apply daytime gap-filling algorithm -----------------------------------
-EddyProc.C$sGLFluxPartition()
+dayP <- lapply(uStarSuffixes, function(suffix){ #added M.Nyberg 26/03/2021
+EddyProc.C$sGLFluxPartition(Suffix.s = suffix)
+})
 
+grep("GPP.*_f$|Reco|", #added M.Nyberg 26/03/2021
+names(EddyProc.C$sExportResults()), value = TRUE)
+
+#EddyProc.C$sGLFluxPartition()
 
 # Output results -----------------------------------
 
@@ -97,7 +123,7 @@ names(FilledEddyData.F)
 # daily sums (from REddyProc) - CHECK UNITS!
 #setwd("./flux_data")
 setwd("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data")
-EddyProc.C$sPlotDailySums(Var.s = 'LE_f',Format.s = "png", unit.s = "MJ/m2/day") #getting an error saying Var.s has been depreceated 
+EddyProc.C$sPlotDailySums(Var.s = 'LE_f',Format.s = "png", unit.s = "MJ/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'H_f',Format.s = "png", unit.s = "MJ/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'NEE_f',Format.s = "png", unit.s = "gC/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'FCH4_f',Format.s = "png", unit.s = "gC/m2/day")
@@ -116,7 +142,7 @@ write_csv(FilledEddyData.F,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Proj
 ```
 
 ```{r Save only essential variables, echo=FALSE, include=FALSE}
-essential_variables <- grep("NEE_f$|NEE_fsd$|GPP_f$|GPP_DT.*$|Reco|Reco_DT.*$|LE_f$|LE_fsd$|H_f$|H_fsd$|FCH4_f$|FCH4_fsd$",
+essential_variables <- grep("NEE_f$|NEE_fsd$|GPP_f$|GPP_DT.*$|Reco|Reco_DT.*$|LE_f$|LE_fsd$|H_f$|H_fsd$|FCH4_f$|FCH4_fsd$|NEE_uStar_f|NEE_U05_f|NEE_U50_f|NEE_U95_f|NEE_uStar_fsd|NEE_U05_fsd|NEE_U50_fsd|NEE_U95_fsd",
 														names(EddyProc.C$sExportResults()), value = TRUE)
 essential_variables
 
