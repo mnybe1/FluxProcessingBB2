@@ -57,7 +57,6 @@ grep("NEE_.*_f$",names(EddyProc.C$sExportResults()) #added M.Nyberg 26/03/2021
 grep("NEE_.*_fsd$",names(EddyProc.C$sExportResults()) #added M.Nyberg 26/03/2021
 , value = TRUE)
 
-EddyProc.C$sMDSGapFillUStarScens('FCH4', FillAll = TRUE) #added M.Nyberg 26/03/2021
 
 
 # Use MDS for gap-filling NEE, H, LE, and FCH4 (but also use RF for FCH4) ----------------------------------
@@ -89,6 +88,8 @@ EddyProc.C$sMDSGapFill('Tsoil50cm_3', FillAll.b = FALSE)
 
 
 # Apply nighttime gap-filling algorithm -----------------------------------
+EddyProc.C$sMRFluxPartition()
+
 resP <- lapply(uStarSuffixes, function(suffix){ #added M.Nyberg 26/03/2021
 EddyProc.C$sMRFluxPartition(Suffix.s = suffix)
 })
@@ -96,12 +97,13 @@ EddyProc.C$sMRFluxPartition(Suffix.s = suffix)
 grep("GPP.*_f$|Reco", #added M.Nyberg 26/03/2021
 names(EddyProc.C$sExportResults()), value = TRUE)
 
-#EddyProc.C$sMRFluxPartition()
 #EddyProc.C$sApplyUStarScen(EddyProc.C$sMRFluxPartition )
 
 EddyProc.C$sPlotFingerprintY('GPP_U50_f', Year = 2020)
 
 # Apply daytime gap-filling algorithm -----------------------------------
+EddyProc.C$sGLFluxPartition()
+
 dayP <- lapply(uStarSuffixes, function(suffix){ #added M.Nyberg 26/03/2021
 EddyProc.C$sGLFluxPartition(Suffix.s = suffix)
 })
@@ -109,7 +111,6 @@ EddyProc.C$sGLFluxPartition(Suffix.s = suffix)
 grep("GPP.*_f$|Reco|", #added M.Nyberg 26/03/2021
 names(EddyProc.C$sExportResults()), value = TRUE)
 
-#EddyProc.C$sGLFluxPartition()
 
 # Output results -----------------------------------
 
