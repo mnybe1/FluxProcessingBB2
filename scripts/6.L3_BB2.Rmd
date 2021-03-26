@@ -78,9 +78,12 @@ EddyProc.C$sMDSGapFill('Tsoil50cm_3', FillAll.b = FALSE)
 
 # Apply nighttime gap-filling algorithm -----------------------------------
 EddyProc.C$sMRFluxPartition()
+EddyProc.C$sApplyUStarScen(EddyProc.C$sMRFluxPartition )
+
 
 # Apply daytime gap-filling algorithm -----------------------------------
 EddyProc.C$sGLFluxPartition()
+
 
 # Output results -----------------------------------
 
