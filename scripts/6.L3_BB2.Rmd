@@ -21,7 +21,7 @@ library(dplyr)
 # set wd
 getwd()
 #dir <- "../Flux-tower/"
-dir <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower"
+dir <- "G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)"
 knitr::opts_knit$set(root.dir = dir)
 ```
 
@@ -118,12 +118,12 @@ FilledEddyData.F <- EddyProc.C$sExportResults()
 names(FilledEddyData.F)
 ```
 
-```{r Gap-fill and partition in REddyProc, echo=FALSE, include=FALSE}
+```{r Gap-fill and partition in REddyProc_2, echo=FALSE, include=FALSE}
 # Plot results -----------------------------------
 
 # daily sums (from REddyProc) - CHECK UNITS!
 #setwd("./flux_data")
-setwd("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data")
+setwd("G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data")
 EddyProc.C$sPlotDailySums(Var.s = 'LE_f',Format.s = "png", unit.s = "MJ/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'H_f',Format.s = "png", unit.s = "MJ/m2/day")
 EddyProc.C$sPlotDailySums(Var.s = 'NEE_f',Format.s = "png", unit.s = "gC/m2/day")
@@ -139,7 +139,7 @@ EddyProc.C$sPlotDailySums(Var.s = 'Reco_DT',Format.s = "png", unit.s = "gC/m2/da
 ```
 
 ```{r Save full REddyPro output, echo=FALSE, include=FALSE}
-write_csv(FilledEddyData.F,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB_REddyProc_gapfilled_partition_fulloutputBB2.csv")
+write_csv(FilledEddyData.F,"G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB_REddyProc_gapfilled_partition_fulloutputBB2.csv")
 ```
 
 ```{r Save only essential variables, echo=FALSE, include=FALSE}
@@ -157,7 +157,7 @@ essential <- FilledEddyData.F[,which(names(FilledEddyData.F) %in% essential_vari
 ```{r gap-fill FCH4 using random forest from Kim et al. 2019, echo=FALSE, include=FALSE}
 
 # variable we need for FCH4 gap-filling
-Input <- read.table("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/REddyProc_input/for_gap_filling_partitioningBB2.txt", header = T)
+Input <- read.table("G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/REddyProc_input/for_gap_filling_partitioningBB2.txt", header = T)
 
 # Delete first row that contains units
 Input <- Input[-1, ]
@@ -185,70 +185,91 @@ ML.df$c <- cos((ML.df$DoY-1)/365*2*pi)
 # period when FCH4 is not missing
 wm_only <- ML.df[!is.na(ML.df$FCH4), ]
 
-# 75% of data used for model tuning/validation
-index <- createDataPartition(wm_only$FCH4, p=0.75, list=F) 
-train_set <- wm_only[index,]
-test_set <- wm_only[-index,]
+############### Random forest run 20x ###############
 
-############### Random forest run
-
-#### option 1. random forest model with mtry tuning
 #Add parallel processing for the fast processing if you want to
 library(parallel)
 library(doParallel)
-#cluster <- makeCluster(6)
-cluster <- parallel::makeCluster(10, setup_timeout = 0.5)
-registerDoParallel(cluster)
-RF_FCH4 <- train(FCH4 ~ ., data = train_set[,predictors],
- 								 method = "rf",
- 								 preProcess = c("medianImpute"),                #impute missing met data with median
- 								 trControl=trainControl(method = "cv",   #three-fold cross-validation for model parameters 3 times
- 								 											number = 3),
- 								 na.action = na.pass,
- 								 allowParallel=FALSE, # This requires parallel packages. Otherwise you can choose FALSE.
- 								 ntree=400, # can generate more trees
- 								 importance = TRUE)
 
-RF_FCH4$bestTune
-RF_FCH4$results
+combined_result <- list()
 
-############### Results
-# variable importance
-plot(varImp(RF_FCH4, scale = FALSE), main="variable importance")
+for(i in 1:20){
+  start_time <- Sys.time()
+  # setting seed
+  set.seed(i)
+  train_rows <- sample(1:nrow(wm_only), 0.75*nrow(wm_only))
+  # select the training set
+  train_set <- wm_only %>% slice(train_rows)
+  # select the validation set
+  test_set <- anti_join(wm_only, train_set)
+  #### option 1. random forest model with mtry tuning
+  #cluster <- makeCluster(6)
+  cluster <- parallel::makeCluster(10, setup_timeout = 0.5)
+  registerDoParallel(cluster)
+  RF_FCH4 <- train(FCH4 ~ ., data = train_set[,predictors],
+   								 method = "rf",
+   								 preProcess = c("medianImpute"),                #impute missing met data with median
+   								 trControl=trainControl(method = "cv",   #three-fold cross-validation for model parameters 3 times
+   								 											number = 3),
+   								 na.action = na.pass,
+   								 # allowParallel=FALSE, # This requires parallel packages. Otherwise you can choose FALSE.
+   								 ntree=400, # can generate more trees
+   								 importance = TRUE)
+  
+  RF_FCH4$bestTune
+  RF_FCH4$results
+  
+  ############### Results
+  # variable importance
+  plot(varImp(RF_FCH4, scale = FALSE), main="variable importance")
+  
+  #generate FCH4_rf predictions for testset
+  test_set$FCH4_rf <- predict(RF_FCH4, test_set, na.action = na.pass)
+  regrRF <- lm(test_set$FCH4_rf ~ test_set$FCH4); 
+  print(summary(regrRF))
+  ggplot(test_set, aes(x=FCH4, y=FCH4_rf)) + geom_abline(slope = 1, intercept = 0)+
+    geom_point() + geom_smooth(method = "lm") + ggtitle("testset")
+  
+  # whole dataset
+  result <- data.frame(FCH4 = ML.df$FCH4) # you can add datetime column here if you want to.
+  result$FCH4_RF_model <- predict(RF_FCH4, ML.df, na.action = na.pass) # FCH4 RF model
+  result$FCH4_RF_filled <- ifelse(is.na(result$FCH4),result$FCH4_RF_model,result$FCH4) # gap-filled column (true value when it is, gap-filled value when missing)
+  result$FCH4_RF_residual <- ifelse(is.na(result$FCH4),NA,result$FCH4_RF_model - result$FCH4) # residual (model - obs). can be used for random uncertainty analysis
+  
+  # time series
+  result$DateTime <- Input$TIMESTAMP_END
+  
+  result %>% ggplot(aes(DateTime,FCH4)) + geom_point() + 
+    theme_bw() + ylab(expression(paste("FCH4 (umol ", m^-2,s^-1,")"))) %>% 
+    print()
+  result %>% ggplot(aes(DateTime,FCH4_RF_filled)) + geom_point(color="red",alpha=0.5) +
+    geom_point(aes(DateTime,FCH4),color="black")+
+    theme_bw() + ylab(expression(paste("FCH4 (umol ", m^-2,s^-1,")"))) %>% 
+    print()
+  
+  # whole data comparison
+  print(ggplot(result, aes(x = FCH4, y =FCH4_RF_model)) + geom_abline(slope = 1, intercept = 0)+
+    geom_point() + geom_smooth(method = "lm") + ggtitle("whole dataset"))
+  regrRF_whole <- lm(result$FCH4_RF_model ~ result$FCH4);
+  print(summary(regrRF_whole))
+  
+  
+  result$iteration <- i 
+  combined_result[[i]] <- result
+  end_time <- Sys.time()
+  end_time - start_time
+}
 
-#generate FCH4_rf predictions for testset
-test_set$FCH4_rf <- predict(RF_FCH4, test_set, na.action = na.pass)
-regrRF <- lm(test_set$FCH4_rf ~ test_set$FCH4); 
-print(summary(regrRF))
-ggplot(test_set, aes(x=FCH4, y=FCH4_rf)) + geom_abline(slope = 1, intercept = 0)+
-  geom_point() + geom_smooth(method = "lm") + ggtitle("testset")
+rf_result_df <- data.table::rbindlist(combined_result)
 
-# whole dataset
-result <- data.frame(FCH4 = ML.df$FCH4) # you can add datetime column here if you want to.
-result$FCH4_RF_model <- predict(RF_FCH4, ML.df, na.action = na.pass) # FCH4 RF model
-result$FCH4_RF_filled <- ifelse(is.na(result$FCH4),result$FCH4_RF_model,result$FCH4) # gap-filled column (true value when it is, gap-filled value when missing)
-result$FCH4_RF_residual <- ifelse(is.na(result$FCH4),NA,result$FCH4_RF_model - result$FCH4) # residual (model - obs). can be used for random uncertainty analysis
+write_csv(combined_result_df,"G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB2_rf_result.csv")
 
-# time series
-result$DateTime <- Input$TIMESTAMP_END
-
-result %>% ggplot(aes(DateTime,FCH4)) + geom_point() + 
-  theme_bw() + ylab(expression(paste("FCH4 (umol ", m^-2,s^-1,")")))
-result %>% ggplot(aes(DateTime,FCH4_RF_filled)) + geom_point(color="red",alpha=0.5) +
-  geom_point(aes(DateTime,FCH4),color="black")+
-  theme_bw() + ylab(expression(paste("FCH4 (umol ", m^-2,s^-1,")")))
-
-# whole data comparison
-ggplot(result, aes(x = FCH4, y =FCH4_RF_model)) + geom_abline(slope = 1, intercept = 0)+
-  geom_point() + geom_smooth(method = "lm") + ggtitle("whole dataset")
-regrRF_whole <- lm(result$FCH4_RF_model ~ result$FCH4);
-print(summary(regrRF_whole))
 ```
 
 ```{r Load L2 data, echo=FALSE, include=FALSE}
-L2 <- read.csv(paste("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L2",".csv",sep = ""),sep=",",header=TRUE,dec=".")  
+L2 <- read.csv(paste("G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB2_L2",".csv",sep = ""),sep=",",header=TRUE,dec=".")  
 
-met <- read.csv('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2.csv') 
+met <- read.csv('G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/met_data/met_merged/met_corrected_gapfilledBB2.csv') 
 
 
 # First, RF CH4 gap-filled data (figure out uncertainty for RF gap-filling)
@@ -266,7 +287,7 @@ if (nrow(L2) == nrow(essential)){
 L3 <- merge(L3, met, by = "DATE") 
 
 
-write_csv(L3,"/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L3.csv")
+write_csv(L3,"G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB2_L3.csv")
 
 # Check to make sure files are of the same length and if TRUE, append to L2
 #if (nrow(L2) == nrow(essential)){
