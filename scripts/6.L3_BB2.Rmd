@@ -262,7 +262,7 @@ for(i in 1:20){
 
 rf_result_df <- data.table::rbindlist(combined_result)
 
-write_csv(combined_result_df,"G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB2_rf_result.csv")
+write_csv(rf_result_df,"G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-Burns Bog 2/Flux-tower (1)/flux_data/BB2_rf_result.csv")
 
 ```
 
