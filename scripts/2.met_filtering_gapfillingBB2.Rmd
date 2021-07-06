@@ -105,6 +105,11 @@ bad_RH <- which(DATA$DATE <= '2020-03-29 00:00:00')
 DATA$RH_2M[bad_RH] <- NA
 
 #DATA$RH_2M[DATA$RH_2M >= '105'] <- NA
+
+#Correction for PAR - filter out -ve values
+bad_PAR <- which(DATA$INCOMING_PAR < 0)
+
+DATA$INCOMING_PAR[bad_PAR] <- NA
 ```
 
 ```{r gap-fill using ECCC data & ClimateAtUBC data, echo = FALSE}
@@ -139,6 +144,10 @@ plot_ly(data = DATA, x = ~DATE, y = ~WIND_VELOCITY_CUP, name = 'gap-filled', typ
 
 plot_ly(data = DATA, x = ~DATE, y = ~PA_1.5M, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
   add_trace(data = no_gapfilled, x = ~DATE, y = ~PA_1.5M, name = 'non gap-filled', type = 'scatter', mode = 'lines') 
+
+plot_ly(data = DATA, x = ~DATE, y = ~INCOMING_PAR, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
+  add_trace(data = no_gapfilled, x = ~DATE, y = ~INCOMING_PAR, name = 'non gap-filled', type = 'scatter', mode = 'lines') 
+
 
 ### 2. climateATUBC dataset: Rg, ppt (http://137.82.254.122/DataExport.aspx) from Jan 1, 2014 to present & change extension to csv
 ubc <- read_csv("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2014-Burns\ Bog/Flux-tower/met_data/met_ancillary/ubc_climate/climateAtUBC.csv")
@@ -200,6 +209,10 @@ plot_ly(data = ubc_use, x = ~DATE, y = ~precipitation_main, name = 'BB', type = 
 
 plot_ly(data = DATA, x = ~DATE, y = ~PRECIP, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
   add_trace(data = no_gapfilled, x = ~DATE, y = ~PRECIP, name = 'original', type = 'scatter', mode = 'lines') 
+
+#Linear interpolate small gaps where PAR was <0 
+DATA$INCOMING_PAR<- na.approx(DATA$INCOMING_PAR, na.rm = FALSE, rule = 2)
+
 ```
 
 ```{r create new output variables, echo = FALSE}
