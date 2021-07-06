@@ -190,7 +190,7 @@ plot_ly(data = Data_QAQC, x = ~DATE, y = ~u., name = 'original', type = 'scatter
 ```
 
 ```{r Now filter everybody - ADD WIND DIRECTION FILTER! & STORAGE TERMS, echo=FALSE, warning=FALSE}
-badflux = Data_QAQC$badustar | Data_QAQC$badt | Data_QAQC$badrot
+Data_QAQC$badflux = Data_QAQC$badustar | Data_QAQC$badt | Data_QAQC$badrot
 Data_QAQC$L[Data_QAQC$badflux == 1]  <- NA
 Data_QAQC$X.z.d..L[Data_QAQC$badflux == 1]  <- NA
 Data_QAQC$co2_flux[Data_QAQC$badflux == 1]  <- NA
