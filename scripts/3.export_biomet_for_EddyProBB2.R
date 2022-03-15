@@ -4,10 +4,11 @@ library(readr)
 library(tidyverse)
 
 rm(list=ls())
-
+dir <- 'G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-BB2 Burns Bog 2/Flux-tower (1)'
+  
 # Load data
 #data <- read_csv('./Flux-tower/met_data/met_merged/met_corrected_gapfilled.csv')
-data <- read_csv('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2.csv') 
+data <- read_csv(paste0(dir, '/met_data/met_merged/met_corrected_gapfilledBB2.csv')) 
 
 # Change data class to posixct
 #data$DATE <- as.POSIXct(data$DATE, format='%Y-%m-%d %H%M')
@@ -32,7 +33,7 @@ data2 <- rbind(c("yyyy-mm-dd HHMM", "C", "kPa"), data2)
 #						sep = ",", row.names=FALSE, quote=FALSE)
 
 #export location 
-write.table(data2, "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs/biomet_for_EP_BB2.txt",
+write.table(data2, paste0(dir, "/EP_outputs/biomet_for_EP_BB2.txt"),
 						sep = ",", row.names=FALSE, quote=FALSE)
 
 

@@ -18,7 +18,7 @@ library(lubridate)
 
 # set wd
 getwd()
-dir <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower"
+dir <- "G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-BB2 Burns Bog 2/Flux-tower (1)"
 knitr::opts_knit$set(root.dir = dir)
 ```
 
@@ -190,7 +190,7 @@ plot_ly(data = Data_QAQC, x = ~DATE, y = ~u., name = 'original', type = 'scatter
 ```
 
 ```{r Now filter everybody - ADD WIND DIRECTION FILTER! & STORAGE TERMS, echo=FALSE, warning=FALSE}
-Data_QAQC$badflux = Data_QAQC$badustar | Data_QAQC$badt | Data_QAQC$badrot
+badflux = Data_QAQC$badustar | Data_QAQC$badt | Data_QAQC$badrot | Data_QAQC$badwind  # added badwind TS(2022/03/15)
 Data_QAQC$L[Data_QAQC$badflux == 1]  <- NA
 Data_QAQC$X.z.d..L[Data_QAQC$badflux == 1]  <- NA
 Data_QAQC$co2_flux[Data_QAQC$badflux == 1]  <- NA
@@ -284,7 +284,7 @@ plot_ly(data = input, x = ~DATE, y = ~ch4_var, name = 'original', type = 'scatte
   toWebGL()
 ```
 ```{r Plot energy balance closure, echo=FALSE, warning=FALSE}
-Ebal_denominator <- met$NR[M_start:M_end]-met$G[M_start:M_end]
+Ebal_denominator <- met$NR[M_start:M_end]-met$G_corr[M_start:M_end]
 
 Ebal_numerator <- Data_QAQC$H+Data_QAQC$LE
 

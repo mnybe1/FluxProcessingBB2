@@ -18,12 +18,13 @@ library(plotly)
 # set wd
 getwd()
 #dir <- "../Flux-tower/"
-dir <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower"
+dir <- "G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-BB2 Burns Bog 2/Flux-tower (1)"
+dir_BB1 <- "G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2014-BB1 Burns Bog /Flux-tower (1)"
 knitr::opts_knit$set(root.dir = dir)
 ```
 
 ```{r load met_merged.csv, echo=FALSE, include=FALSE}
-ts<-read.csv( "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_mergedBB2.csv",sep=",",header=TRUE,dec=".")
+ts<-read.csv("./met_data/met_merged/met_mergedBB2.csv",sep=",",header=TRUE,dec=".")
 head(ts)
 tail(ts)
 ```
@@ -91,6 +92,7 @@ cont.DS$year <- year(cont.DS$DATE)
 cont.DS$jday <- yday(cont.DS$DATE)
 cont.DS$hour_dec <- hour(cont.DS$DATE) + minute(cont.DS$DATE)/60
 ```
+
 ```{r apply corrections to met data, echo = FALSE}
 # add new corrections here if you notice errors/outliers in met data
 DATA<-cont.DS
@@ -99,17 +101,34 @@ DATA$obs<-c(1:nrow(cont.DS))
 #tail(DATA)
 DATA <- DATA[-nrow(DATA),]
 
-#Corrections  for RH
-bad_RH <- which(DATA$DATE <= '2020-03-29 00:00:00')
+
+
+####------------ Corrections  for RH ------------------#####
+
+plot_ly(data = DATA, x = ~DATE, y = ~RH_2M, type = 'scatter', mode = 'lines')
+
+bad_RH <- which(DATA$DATE <= '2020-03-29 00:00:00' | 
+                  (DATA$DATE >= "2022-01-02" & DATA$DATE <= "2022-02-10"))
 
 DATA$RH_2M[bad_RH] <- NA
 
-#DATA$RH_2M[DATA$RH_2M >= '105'] <- NA
+# set max value = 100%
+DATA$RH_2M <- ifelse(DATA$RH_2M > 100, 100, DATA$RH_2M)
 
-#Correction for PAR - filter out -ve values
-bad_PAR <- which(DATA$INCOMING_PAR < 0)
+# read BB1 data
+BB1_met <- read.csv(paste0(dir_BB1, '/met_data/met_merged/met_corrected_gapfilled.csv'))
+BB1_met$DATE <- as.POSIXct(BB1_met$DATE, tz = "UTC")
 
-DATA$INCOMING_PAR[bad_PAR] <- NA
+BB1_met <- left_join(BB1_met, DATA, by = "DATE")
+
+plot_ly(data = BB1_met, x = ~DATE, y = ~RH_2M.x, name = "RH at BB1",  type = 'scatter', mode = 'lines') %>% 
+  add_trace(y = ~RH_2M.y, name = "RH at BB2", type = "scatter", mode = "lines")
+
+# replace bad RH in BB2 with RH form BB1
+DATA$RH_2M[bad_RH] <- BB1_met$RH_2M.x[pmatch(DATA$DATE[bad_RH],BB1_met$DATE)]
+
+plot_ly(data = DATA, x = ~DATE, y = ~RH_2M, type = 'scatter', mode = 'lines')
+
 ```
 
 ```{r gap-fill using ECCC data & ClimateAtUBC data, echo = FALSE}
@@ -118,7 +137,7 @@ DATA$INCOMING_PAR[bad_PAR] <- NA
 no_gapfilled <- DATA
 
 ### 1. environment canada dataset: airT, RH, wind speed
-near_station <- read_csv("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2014-Burns\ Bog/Flux-tower/met_data/met_ancillary/ECCC/ECCC_met_merged.csv")
+near_station <- read_csv(paste0(dir_BB1, "/met_data/met_ancillary/ECCC/ECCC_met_merged.csv"))
 #names(near_station)
 
 for (i in c(1, 2, 4, 5)){
@@ -145,14 +164,21 @@ plot_ly(data = DATA, x = ~DATE, y = ~WIND_VELOCITY_CUP, name = 'gap-filled', typ
 plot_ly(data = DATA, x = ~DATE, y = ~PA_1.5M, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
   add_trace(data = no_gapfilled, x = ~DATE, y = ~PA_1.5M, name = 'non gap-filled', type = 'scatter', mode = 'lines') 
 
-plot_ly(data = DATA, x = ~DATE, y = ~INCOMING_PAR, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
-  add_trace(data = no_gapfilled, x = ~DATE, y = ~INCOMING_PAR, name = 'non gap-filled', type = 'scatter', mode = 'lines') 
-
-
 ### 2. climateATUBC dataset: Rg, ppt (http://137.82.254.122/DataExport.aspx) from Jan 1, 2014 to present & change extension to csv
-ubc <- read_csv("/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2014-Burns\ Bog/Flux-tower/met_data/met_ancillary/ubc_climate/climateAtUBC.csv")
+ubc <- read_csv(paste0(dir_BB1, "/met_data/met_ancillary/ubc_climate/climateAtUBC.csv"))
+
+# UBC climate data from Zoran
+ubc2 <- read.table(paste0(dir_BB1, "/met_data/met_ancillary/ubc_climate/TotemDataForTin.txt"), header = T, sep = ",")
+colnames(ubc2) <- colnames(ubc)
+
+
 # Date character -> Date data
 ubc$DATE <- as.POSIXct(ubc$time_stamp,format="%m/%d/%Y %I:%M:%S %p", tz = "UTC")
+ubc2$DATE <- as.POSIXct(ubc2$time_stamp, format ="%Y-%m-%d %H:%M:%S", tz = "UTC" )
+
+ubc <- rbind(ubc, ubc2)
+
+# Date character -> Date data
 gap <- which(is.na(ubc$DATE))
 ubc$DATE[gap] <- as.POSIXct(ubc$time_stamp,format="%m/%d/%Y", tz = "UTC")[gap]
 
@@ -209,10 +235,6 @@ plot_ly(data = ubc_use, x = ~DATE, y = ~precipitation_main, name = 'BB', type = 
 
 plot_ly(data = DATA, x = ~DATE, y = ~PRECIP, name = 'gap-filled', type = 'scatter', mode = 'lines') %>%
   add_trace(data = no_gapfilled, x = ~DATE, y = ~PRECIP, name = 'original', type = 'scatter', mode = 'lines') 
-
-#Linear interpolate small gaps where PAR was <0 
-DATA$INCOMING_PAR<- na.approx(DATA$INCOMING_PAR, na.rm = FALSE, rule = 2)
-
 ```
 
 ```{r create new output variables, echo = FALSE}
@@ -234,6 +256,39 @@ plot_ly(data = DATA, x = ~DATE, y = ~DATA$NR, name = 'NETRAD', type = 'scatter',
   add_trace(x = ~DATE, y = ~G,name = 'G', type = 'scatter', mode = 'lines') %>%
   add_trace(x = ~DATE, y = ~AE, name = 'AE', type = 'scatter', mode = 'lines') 
 
+
+### Calculate SG (heat storage flux in the soil above the soil heat fluxes measurement - W m^-2) -- TS (2021-10-05)
+
+SVWC.99 <- quantile(DATA$SVWC/100, 0.99, na.rm = T)
+
+SOIL_TEMP_5CM <- rowMeans(cbind(DATA$SOIL_TEMP_1_5CM, DATA$SOIL_TEMP_2_5CM, DATA$SOIL_TEMP_3_5CM))
+
+dT_dt <- diff(SOIL_TEMP_5CM) / 1800
+dZ <- 0.05
+Vo <- 1 - SVWC.99
+C_soil <- DATA$SVWC/100 * 4.18 + 3.14 * Vo + 0.0012 * (1 - DATA$SVWC/100 - Vo) 
+SG <- C_soil * 10e6 * dT_dt * dZ
+
+
+# add heat storage column
+DATA$SG <- SG 
+
+# remove values that are off due to Ts error
+DATA$SG <- ifelse(DATA$SG >= quantile(DATA$SG, .97, na.rm = T) | 
+                  DATA$SG <= quantile(DATA$SG, .25, na.rm = T), 
+                  NA, DATA$SG) 
+
+# calculate corrected G
+DATA$G_corr <- ifelse(is.na(DATA$SG), DATA$G, DATA$G + DATA$SG)
+
+plot_ly(data = DATA, x =~DATE,  y= ~G_corr, name = 'G_corr', type = 'scatter', mode = 'lines') %>% 
+  add_trace(x = ~DATE, y = ~G,name = 'G', type = 'scatter', mode = 'lines')
+  
+
+plot_ly(data = DATA, x = ~DATE, y = ~DATA$NR, name = 'NETRAD', type = 'scatter', mode = 'lines') %>%
+  add_trace(x = ~DATE, y = ~G,name = 'G', type = 'scatter', mode = 'lines') %>%
+  add_trace(x = ~DATE, y = ~AE, name = 'AE', type = 'scatter', mode = 'lines') 
+
 # Plot all variables
 for (i in 2:ncol(DATA)){
 	use <- DATA[,i]
@@ -241,6 +296,7 @@ for (i in 2:ncol(DATA)){
 	plot_ly(data = DATA, x = ~DATE, y = ~use, type = 'scatter', mode = 'lines') %>%
 	  layout(yaxis = list(title = names(DATA)[i]))
 }
+
 ```
 
 #Removing extra rows at the start of data that predate installation of the EC tower
@@ -252,5 +308,5 @@ DATA <- DATA %>%
 
 ```{r save filtered & gap-filled output, echo = FALSE}
 # save output
-write.csv(DATA,paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/met_merged/met_corrected_gapfilledBB2','.csv',sep=''),row.names=FALSE)      
+write.csv(DATA,paste0(dir, '/met_data/met_merged/met_corrected_gapfilledBB2.csv',sep=''),row.names=FALSE)      
 ```

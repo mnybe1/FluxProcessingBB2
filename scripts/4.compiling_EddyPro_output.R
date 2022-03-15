@@ -15,10 +15,11 @@ library(DescTools)
 # clear memory
 
 rm(list=ls())
+dir <- "G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-BB2 Burns Bog 2/Flux-tower (1)"
 
 # set path
 #path <- "./Flux-tower/EP_outputs"
-path <- "/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/EP_outputs"
+path <- paste0(dir, "/EP_outputs")
 #path <- "/Users/marionnyberg/Google\ Drive/BC/UBC/TEST\ BB\ FLUX/BB2"
 
 # List only full_output files
@@ -141,7 +142,7 @@ cont.DS$date <- as.Date(cont.DS$DATE) #already got this one from the answers abo
 
 cont.DS$time <- format(as.POSIXct(cont.DS$DATE) ,format = "%H:%M") 
 
-write.csv(cont.DS,paste('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/flux_data/BB2_L1','.csv',sep =''),row.names=FALSE)
+write.csv(cont.DS,paste0(dir, '/flux_data/BB2_L1.csv'),row.names=FALSE)
 
 
 

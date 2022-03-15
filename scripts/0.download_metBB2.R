@@ -2,7 +2,7 @@
 library(readr)
 
 #setwd('../Flux-tower/met_data/cr1000/') old version from BB1
-setwd('/Users/marionnyberg/Google\ Drive/Micromet\ Lab/Projects/2019-Burns\ Bog\ 2/Flux-tower/met_data/cr1000') #Marion's wd
+setwd('G:/.shortcut-targets-by-id/1txCh9lZ7VGCujXGvBaJCMVnuxT-65q4K/Micromet Lab/Projects/2019-BB2 Burns Bog 2/Flux-tower (1)/met_data/cr1000') #Marion's wd
 
 # Read the URL.
 url <- "https://ibis.geog.ubc.ca/~micromet/webdata/resources/csv/"
